@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Giant Junction Jumble Sale 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; }
+    #header { padding: 14px 20px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 12px; }
+    #header h1 { font-size: 18px; font-weight: 600; color: #1a1a1a; }
+    #header p { font-size: 13px; color: #888; }
+    #count { font-size: 13px; background: #f0f4ff; color: #3b5bdb; padding: 4px 10px; border-radius: 20px; font-weight: 500; margin-left: auto; }
+    #map { height: calc(100vh - 57px); }
+    .popup-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .popup-address { font-size: 12px; color: #666; margin-bottom: 8px; }
+    .popup-items { font-size: 12px; }
+    .popup-items span { display: inline-block; background: #f0f4ff; color: #3b5bdb; padding: 2px 8px; border-radius: 12px; margin: 2px 2px 0 0; }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <div>
+      <h1>Giant Junction Jumble Sale 2026</h1>
+      <p>Click any pin to see what's for sale</p>
+    </div>
+    <div id="count">Loading...</div>
+  </div>
+  <div id="map"></div>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQtOCwdPbUlAs_2K1TS1fqgYeb78rtMDA-4MtnKSoauz50AA-7uIr_1oE0emu_5kydNQ_yzeDbBZb8I/pub?output=csv";
+
+    const map = L.map('map').setView([43.6532, -79.4], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+      return lines.slice(1).map(line => {
+        const vals = line.match(/(".*?"|[^,]+)(?=,|$)/g) || [];
+        const obj = {};
+        headers.forEach((h, i) => {
+          obj[h] = (vals[i] || '').replace(/"/g, '').trim();
+        });
+        return obj;
+      });
+    }
+
+    fetch(CSV_URL)
+      .then(r => r.text())
+      .then(text => {
+        const rows = parseCSV(text);
+        let count = 0;
+        rows.forEach(row => {
+          const lat = parseFloat(row['Latitude']);
+          const lng = parseFloat(row['Longitude']);
+          if (!lat || !lng) return;
+          count++;
+          const items = (row['What are you selling - check all that apply'] || '')
+            .split(',').map(s => s.trim()).filter(Boolean);
+          const badges = items.map(i => `<span>${i}</span>`).join('');
+          const popup = `
+            <div class="popup-name">${row["Name(s)"] || 'Seller'}</div>
+            <div class="popup-address">${row['Address']}</div>
+            <div class="popup-items">${badges || 'See you there!'}</div>
+          `;
+          L.marker([lat, lng]).addTo(map).bindPopup(popup);
+        });
+        document.getElementById('count').textContent = count + ' stops';
+      });
+  </script>
+</body>
+</html>
