@@ -80,7 +80,7 @@
       const badges = items.split(',').map(s => s.trim()).filter(Boolean)
         .map(i => `<span>${i}</span>`).join('');
       const popup = `
-        <div class="popup-address">${address}</div>
+        <div class="popup-address"><strong>${address}</strong></div>
         <div class="popup-items">${badges || 'See you there!'}</div>
       `;
       L.marker([lat, lng]).addTo(map).bindPopup(popup);
