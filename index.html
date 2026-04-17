@@ -71,7 +71,7 @@
             .split(',').map(s => s.trim()).filter(Boolean);
           const badges = items.map(i => `<span>${i}</span>`).join('');
           const popup = `
-            <div class="popup-name">${row["Name(s)"] || 'Seller'}</div>
+            <div class="popup-name">${row["Name(s)"] || 'No Name Provided'}</div>
             <div class="popup-address">${row['Address']}</div>
             <div class="popup-items">${badges || 'See you there!'}</div>
           `;
