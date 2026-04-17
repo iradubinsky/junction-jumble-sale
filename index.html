@@ -39,6 +39,14 @@
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }).addTo(map);
 
+    const foodIcon = L.divIcon({
+  html: '🧁',
+  className: '',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+  popupAnchor: [0, -15]
+});
+
  function parseCSV(text) {
   const lines = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
@@ -83,7 +91,11 @@
         <div class="popup-address"><strong>${address}</strong></div>
         <div class="popup-items">${badges || 'See you there!'}</div>
       `;
-      L.marker([lat, lng]).addTo(map).bindPopup(popup);
+
+      const isFood = items.includes('Food, Drinks or Home Baked Goods');
+L.marker([lat, lng], { icon: isFood ? foodIcon : new L.Icon.Default() })
+  .addTo(map).bindPopup(popup);
+      
     });
     document.getElementById('count').textContent = count + ' stops';
   })
