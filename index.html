@@ -92,7 +92,7 @@
         <div class="popup-items">${badges || 'See you there!'}</div>
       `;
 
-      const isFood = items.includes('Food, Drinks or Home Baked Goods');
+      const isFood = items.includes('Baked Goods');
 L.marker([lat, lng], { icon: isFood ? foodIcon : new L.Icon.Default() })
   .addTo(map).bindPopup(popup);
       
