@@ -57,28 +57,38 @@
   });
 }
 
-   fetch(CSV_URL)
+ fetch(CSV_URL)
   .then(r => r.text())
   .then(text => {
-        const rows = parseCSV(text);
-        let count = 0;
-        rows.forEach(row => {
-          const lat = parseFloat(row['Latitude']);
-          const lng = parseFloat(row['Longitude']);
-          if (!lat || !lng) return;
-          count++;
-          const items = (row['What are you selling - check all that apply'] || '')
-            .split(',').map(s => s.trim()).filter(Boolean);
-          const badges = items.map(i => `<span>${i}</span>`).join('');
-          const popup = `
-            <div class="popup-name">${row["Name(s)"] || 'No Name Provided'}</div>
-            <div class="popup-address">${row['Address']}</div>
-            <div class="popup-items">${badges || 'See you there!'}</div>
-          `;
-          L.marker([lat, lng]).addTo(map).bindPopup(popup);
-        });
-        document.getElementById('count').textContent = count + ' stops';
-      })
+    const lines = text.trim().split('\n');
+    let count = 0;
+    lines.slice(1).forEach(line => {
+      const vals = [];
+      let cur = '', inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        if (line[i] === '"') { inQuotes = !inQuotes; }
+        else if (line[i] === ',' && !inQuotes) { vals.push(cur.trim()); cur = ''; }
+        else { cur += line[i]; }
+      }
+      vals.push(cur.trim());
+      const name = vals[2] || 'Seller';
+      const address = vals[3] || '';
+      const items = vals[4] || '';
+      const lat = parseFloat(vals[5]);
+      const lng = parseFloat(vals[6]);
+      if (!lat || !lng) return;
+      count++;
+      const badges = items.split(',').map(s => s.trim()).filter(Boolean)
+        .map(i => `<span>${i}</span>`).join('');
+      const popup = `
+        <div class="popup-name">${name}</div>
+        <div class="popup-address">${address}</div>
+        <div class="popup-items">${badges || 'See you there!'}</div>
+      `;
+      L.marker([lat, lng]).addTo(map).bindPopup(popup);
+    });
+    document.getElementById('count').textContent = count + ' stops';
+  })
   .catch(err => {
     document.getElementById('count').textContent = 'Error';
     console.error('CSV fetch failed:', err);
