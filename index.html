@@ -57,9 +57,9 @@
   });
 }
 
-    fetch(CSV_URL)
-      .then(r => r.text())
-      .then(text => {
+   fetch(CSV_URL)
+  .then(r => r.text())
+  .then(text => {
         const rows = parseCSV(text);
         let count = 0;
         rows.forEach(row => {
@@ -78,7 +78,11 @@
           L.marker([lat, lng]).addTo(map).bindPopup(popup);
         });
         document.getElementById('count').textContent = count + ' stops';
-      });
+      })
+  .catch(err => {
+    document.getElementById('count').textContent = 'Error';
+    console.error('CSV fetch failed:', err);
+  });
   </script>
 </body>
 </html>
