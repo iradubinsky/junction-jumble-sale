@@ -71,7 +71,6 @@
         else { cur += line[i]; }
       }
       vals.push(cur.trim());
-      const name = vals[2] || 'Seller';
       const address = vals[3] || '';
       const items = vals[4] || '';
       const lat = parseFloat(vals[5]);
@@ -81,7 +80,6 @@
       const badges = items.split(',').map(s => s.trim()).filter(Boolean)
         .map(i => `<span>${i}</span>`).join('');
       const popup = `
-        <div class="popup-name">${name}</div>
         <div class="popup-address">${address}</div>
         <div class="popup-items">${badges || 'See you there!'}</div>
       `;
