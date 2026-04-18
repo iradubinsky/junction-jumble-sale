@@ -39,12 +39,12 @@
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }).addTo(map);
 
-    const foodIcon = L.divIcon({
-  html: '🧁',
+   const foodIcon = L.divIcon({
+  html: '<div style="position:relative; width:25px; height:41px;"><img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png" style="width:25px; height:41px;"><span style="position:absolute; top:-8px; right:-10px; font-size:16px;">🧁</span></div>',
   className: '',
-  iconSize: [30, 30],
-  iconAnchor: [15, 15],
-  popupAnchor: [0, -15]
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34]
 });
 
  function parseCSV(text) {
