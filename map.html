@@ -97,7 +97,7 @@ L.marker([lat, lng], { icon: isFood ? foodIcon : new L.Icon.Default() })
   .addTo(map).bindPopup(popup);
       
     });
-    document.getElementById('count').textContent = count + ' stops';
+    document.getElementById('count').textContent = count + ' sales';
   })
   .catch(err => {
     document.getElementById('count').textContent = 'Error';
