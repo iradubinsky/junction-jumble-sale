@@ -115,18 +115,42 @@
     <div style="font-size: 1rem;">DATE FOR 2027 TO BE ANNOUNCED IN JANUARY</div>
     <div style="font-size: 1rem;">Join the Facebook event or subscribe to our email list</div>
   
-  <div id="mailing-list-form">
-  <p>Be the first to know about next year's Giant Junction Jumble Sale!</p>
-  <div class="form-row">
+ <div id="mailing-list-form" style="text-align:center; margin: 20px auto;">
+  <div style="display:flex; justify-content:center; gap:0; max-width:480px; margin:0 auto;">
     <input 
       type="email" 
       id="email-input" 
-      placeholder="your@email.com" 
-      required
+      placeholder="your@email.com"
+      style="
+        padding: 14px 20px;
+        font-size: 16px;
+        font-family: inherit;
+        border: 3px solid #cc2200;
+        border-right: none;
+        border-radius: 50px 0 0 50px;
+        outline: none;
+        background: white;
+        color: #333;
+        width: 280px;
+      "
     />
-    <button onclick="submitEmail()">Subscribe</button>
+    <button 
+      onclick="submitEmail()"
+      style="
+        padding: 14px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: inherit;
+        background: #cc2200;
+        color: white;
+        border: 3px solid #cc2200;
+        border-radius: 0 50px 50px 0;
+        cursor: pointer;
+        white-space: nowrap;
+      "
+    >Subscribe</button>
   </div>
-  <p id="form-message" style="display:none;"></p>
+  <p id="form-message" style="display:none; margin-top:12px; font-weight:bold; font-family:inherit;"></p>
 </div>
 
 <script>
@@ -135,28 +159,28 @@ function submitEmail() {
   const msg = document.getElementById('form-message');
   const scriptUrl = 'https://script.google.com/macros/s/AKfycbxzXVzpGR9_l4tZpW_m4gjqTAd0e8qUlho15Mtp6VtHQY7XS2MZWJDvs-b637L7J5AeEg/exec';
 
-  if (!email) return;
+  if (!email || !email.includes('@')) {
+    msg.style.display = 'block';
+    msg.style.color = '#cc2200';
+    msg.textContent = 'Please enter a valid email address.';
+    return;
+  }
 
   fetch(scriptUrl, {
     method: 'POST',
+    mode: 'no-cors',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: 'email=' + encodeURIComponent(email)
   })
-  .then(res => res.json())
-  .then(data => {
+  .then(() => {
     msg.style.display = 'block';
-    if (data.success) {
-      msg.style.color = 'green';
-      msg.textContent = "You're on the list — see you next year!";
-      document.getElementById('email-input').value = '';
-    } else {
-      msg.style.color = 'red';
-      msg.textContent = 'Something went wrong. Please try again.';
-    }
+    msg.style.color = '#cc2200';
+    msg.textContent = "You're on the list — see you next year! 🎉";
+    document.getElementById('email-input').value = '';
   })
   .catch(() => {
     msg.style.display = 'block';
-    msg.style.color = 'red';
+    msg.style.color = '#cc2200';
     msg.textContent = 'Something went wrong. Please try again.';
   });
 }
